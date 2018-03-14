@@ -8,6 +8,7 @@ verify_ssl = true
 
 transitions = "*"
 telebot = "*"
+pyTelegramBotApi = "*"
 
 [requires]
 
