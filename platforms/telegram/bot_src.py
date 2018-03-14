@@ -4,7 +4,7 @@ import telebot
 
 from platforms.telegram.helpers import get_session, make_kb_markup
 
-bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN', '455155698:AAE7ZfKhl8gn78Sc1lU30k8_ymaTHXT08rU'),
+bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'),
                       threaded=False)
 
 
