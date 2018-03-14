@@ -1,4 +1,5 @@
 import os
+from typing import Union, Any
 
 import telebot
 
@@ -10,7 +11,17 @@ bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'),
 
 @bot.message_handler(commands=['start', 'help'])
 def handle_commands(message):
-    bot.reply_to(message, "Я - бот для заказа пиццы. Чтобы сделать заказ, следуй моим инструкциям")
+    chat_id = str(message.chat.id)
+
+    session = get_session(chat_id)
+
+    if session.state == 'initial':
+        messages = session.get_messages('')
+
+        send_messages(chat_id, messages)
+
+    else:
+        bot.reply_to(message, "Я - бот для заказа пиццы. Чтобы сделать заказ, следуй моим инструкциям")
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
@@ -21,12 +32,16 @@ def handle_text(message):
 
     session = get_session(chat_id)
 
-    screens = session.get_messages(message_text)
+    messages = session.get_messages(message_text)
 
-    if not isinstance(screens, list):
-        screens = [screens]
+    send_messages(chat_id, messages)
 
-    for screen in screens:
-        message_text, kb_markup = screen['message'], make_kb_markup(*screen.get('options', []))
+
+def send_messages(chat_id, messages: Union[list, Any]):
+    if not isinstance(messages, list):
+        messages = [messages]
+
+    for msg in messages:
+        message_text, kb_markup = msg['message'], make_kb_markup(*msg.get('options', []))
 
         bot.send_message(chat_id, message_text, reply_markup=kb_markup)

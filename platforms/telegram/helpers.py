@@ -5,7 +5,7 @@ from src.sessions import UserSession
 sessions = {}
 
 
-def get_session(chat_id):
+def get_session(chat_id) -> UserSession:
     if sessions.get(chat_id) is None:
         sessions[chat_id] = UserSession(chat_id)
 
