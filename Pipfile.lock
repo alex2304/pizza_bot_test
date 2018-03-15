@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f44e1f3b55fad8a833bf272778a36d4f5ebe39ec4e7504a3347b890c1d0d7695"
+            "sha256": "9ab29aed96074e8ab80e45c377e03d64b25605309516d471710c797ce3669bdc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -29,6 +29,19 @@
             ],
             "version": "==3.0.4"
         },
+        "dawg-python": {
+            "hashes": [
+                "sha256:4941d5df081b8d6fcb4597e073a9f60d5c1ccc9d17cd733e8744d7ecfec94ef3",
+                "sha256:4a5e3286e6261cca02f205cfd5516a7ab10190fa30c51c28d345808f595e3421"
+            ],
+            "version": "==0.7.2"
+        },
+        "docopt": {
+            "hashes": [
+                "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"
+            ],
+            "version": "==0.6.2"
+        },
         "idna": {
             "hashes": [
                 "sha256:2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f",
@@ -49,6 +62,21 @@
                 "sha256:b874a14ed26d31f45427dd2a9c10fe6ac772db3692ce37c7ee6d3bc5d789d3a1"
             ],
             "version": "==0.1.0"
+        },
+        "pymorphy2": {
+            "hashes": [
+                "sha256:3092c21f5e6f78a3a2fa54011236f975cbff8df29827ed6661cf4bde9aacdb8f",
+                "sha256:549a1141abe01093242b9e11a1f60110ee4818f7fe57c9bb363e504339f382f5"
+            ],
+            "version": "==0.8"
+        },
+        "pymorphy2-dicts": {
+            "hashes": [
+                "sha256:70d3e33fa28108a2dfcded787c7a5946c6ab88bb669b3afb20f8c447aadec924",
+                "sha256:be7c6402b5f0919c1c942f07f89a7f53c70f6266a035fa0a561b23807ac79e4a",
+                "sha256:d563f2c7673fc28583550780e21440764eb0168b57d498ec07e346da70ce0b3c"
+            ],
+            "version": "==2.4.393442.3710985"
         },
         "pytelegrambotapi": {
             "hashes": [
