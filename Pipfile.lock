@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5a2e50beeeec0e6014bc8f3212337863aaa97ec643bdb8be07055fb9ffedab19"
+            "sha256": "f44e1f3b55fad8a833bf272778a36d4f5ebe39ec4e7504a3347b890c1d0d7695"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -35,6 +35,20 @@
                 "sha256:8c7309c718f94b3a625cb648ace320157ad16ff131ae0af362c9f21b80ef6ec4"
             ],
             "version": "==2.6"
+        },
+        "nltk": {
+            "hashes": [
+                "sha256:2661f9971d983db314bbebd51ba770811a362c6597fd0f303bb1d3beadcb4834",
+                "sha256:8a3bad9ff7f67d2828a7915c2fab93e6ca910c2015ef40799e1805fccf2354e5"
+            ],
+            "version": "==3.2.5"
+        },
+        "pyaspeller": {
+            "hashes": [
+                "sha256:65bc29c4a5942a763c04687d077e203fe2032491cc83628a60435a66a030f10c",
+                "sha256:b874a14ed26d31f45427dd2a9c10fe6ac772db3692ce37c7ee6d3bc5d789d3a1"
+            ],
+            "version": "==0.1.0"
         },
         "pytelegrambotapi": {
             "hashes": [
