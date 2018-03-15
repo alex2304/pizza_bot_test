@@ -9,11 +9,11 @@ from src.user_session import UserSession
 
 class DialogEngine:
     keywords = {
-        PizzaType.big: 'большая, огромная, побольше',
-        PizzaType.small: 'небольшая, маленькая, поменьше',
+        PizzaType.big: 'большую, огромную, побольше',
+        PizzaType.small: 'небольшую, маленькую, поменьше, мелкую',
 
-        PaymentMethod.card: 'банковская карта, перевод',
-        PaymentMethod.cash: 'наличка, кэш',
+        PaymentMethod.card: 'картой, переводом, карточкой',
+        PaymentMethod.cash: 'наличкой, кэшем',
 
         'yes': 'да, ок, верно, правильно, ага, угу',
         'no': 'нет, отмена, неверно, неправильно, не, неа'
@@ -34,9 +34,10 @@ class DialogEngine:
                 return Messages.error
 
         elif session.state == 'waiting_pizza_type':
-            pizza_type = cls.parse_pizza_type(message_text)
+            try:
+                pizza_type = cls.parse_pizza_type(message_text)
 
-            if pizza_type is None:
+            except ValueError:
                 return Messages.error
 
             if session.approve_pizza_type(pizza_type):
@@ -46,9 +47,10 @@ class DialogEngine:
                 return Messages.error
 
         elif session.state == 'waiting_payment_method':
-            payment_method = cls.parse_payment_method(message_text)
+            try:
+                payment_method = cls.parse_payment_method(message_text)
 
-            if payment_method is None:
+            except ValueError:
                 return Messages.error
 
             if session.approve_payment_method(payment_method):
@@ -58,7 +60,11 @@ class DialogEngine:
                 return Messages.error
 
         elif session.state == 'verifying_order':
-            order_was_verified = cls.parse_verifying_order(message_text)
+            try:
+                order_was_verified = cls.parse_verifying_order(message_text)
+
+            except ValueError:
+                return Messages.error
 
             if not order_was_verified:
                 if session.decline_order():
@@ -99,7 +105,7 @@ class DialogEngine:
         keys_matches = list(filter(lambda k_m: k_m[1], keys_matches))
 
         if len(keys_matches) != 1:
-            return None
+            raise ValueError('Matched %d keys, expected 1' % len(keys_matches))
 
         # return key which has matches
         return keys_matches[0][0]

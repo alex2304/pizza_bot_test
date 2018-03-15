@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from src.constants import Messages, Options
+from src.constants import Messages, Options, PizzaType, PaymentMethod
+from src.dialog_engine import DialogEngine
 from src.user_session import UserSession
 
 
@@ -11,7 +12,7 @@ class TestInitDialog(TestCase):
     # === test dialog initializing ===
 
     def test_init_dialog(self):
-        messages = self.user_session.get_messages('любое сообщение для начала диалога')
+        messages = DialogEngine.process_message(self.user_session, 'любое сообщение для начала диалога')
 
         self.assertEqual(len(messages), 2, msg='в первом состоянии должно быть два сообщения')
 
@@ -31,29 +32,29 @@ class TestChoosingPizzaDialog(TestCase):
     def test_pizza_choosing_wrong_choice(self):
         previous_state = self.user_session.state
 
-        message = self.user_session.get_messages('любой неверный выбор')
+        message = DialogEngine.process_message(self.user_session, 'любой неверный выбор')
 
         self.assertEqual(message, Messages.error)
 
         self.assertEqual(self.user_session.state, previous_state)
 
     def test_pizza_choosing_small_pizza_choice(self):
-        message = self.user_session.get_messages(Options.pizza_small)
+        message = DialogEngine.process_message(self.user_session, Options.pizza_small)
 
         self.assertEqual(message, Messages.choose_payment)
 
         self.assertTrue(self.user_session.is_waiting_payment_method())
 
-        self.assertEqual(self.user_session.pizza_type, Options.pizza_small)
+        self.assertEqual(self.user_session.pizza_type, PizzaType.small)
 
     def test_pizza_choosing_big_pizza_choice(self):
-        message = self.user_session.get_messages(Options.pizza_big)
+        message = DialogEngine.process_message(self.user_session, Options.pizza_big)
 
         self.assertEqual(message, Messages.choose_payment)
 
         self.assertTrue(self.user_session.is_waiting_payment_method())
 
-        self.assertEqual(self.user_session.pizza_type, Options.pizza_big)
+        self.assertEqual(self.user_session.pizza_type, PizzaType.big)
 
 
 class TestChoosingPaymentDialog(TestCase):
@@ -62,36 +63,36 @@ class TestChoosingPaymentDialog(TestCase):
 
         self.user_session.to_waiting_pizza_type()
 
-        self.user_session.get_messages(Options.pizza_big)
+        DialogEngine.process_message(self.user_session, Options.pizza_big)
 
     # === test payment method choosing ===
 
     def test_payment_choosing_wrong_choice(self):
         previous_state = self.user_session.state
 
-        message = self.user_session.get_messages('любой неверный выбор')
+        message = DialogEngine.process_message(self.user_session, 'любой неверный выбор')
 
         self.assertEqual(message, Messages.error)
 
         self.assertEqual(previous_state, self.user_session.state)
 
     def test_payment_choosing_cash_choice(self):
-        message = self.user_session.get_messages(Options.payment_cash)
+        message = DialogEngine.process_message(self.user_session, Options.payment_cash)
 
-        self.assertEqual(message, Messages.verify_order_msg(Options.pizza_big, Options.payment_cash))
+        self.assertEqual(message, Messages.verify_order_msg(PizzaType.big, PaymentMethod.cash))
 
         self.assertTrue(self.user_session.is_verifying_order())
 
-        self.assertEqual(self.user_session.payment_method, Options.payment_cash)
+        self.assertEqual(self.user_session.payment_method, PaymentMethod.cash)
 
     def test_payment_choosing_card_choice(self):
-        message = self.user_session.get_messages(Options.payment_card)
+        message = DialogEngine.process_message(self.user_session, Options.payment_card)
 
-        self.assertEqual(message, Messages.verify_order_msg(Options.pizza_big, Options.payment_card))
+        self.assertEqual(message, Messages.verify_order_msg(PizzaType.big, PaymentMethod.card))
 
         self.assertTrue(self.user_session.is_verifying_order())
 
-        self.assertEqual(self.user_session.payment_method, Options.payment_card)
+        self.assertEqual(self.user_session.payment_method, PaymentMethod.card)
 
 
 class TestOrderVerifyingDialog(TestCase):
@@ -100,30 +101,30 @@ class TestOrderVerifyingDialog(TestCase):
 
         self.user_session.to_waiting_pizza_type()
 
-        self.user_session.get_messages(Options.pizza_big)
+        DialogEngine.process_message(self.user_session, Options.pizza_big)
 
-        self.user_session.get_messages(Options.payment_card)
+        DialogEngine.process_message(self.user_session, Options.payment_card)
 
     # === test order verifying ===
 
     def test_order_verifying_wrong_choice(self):
         previous_state = self.user_session.state
 
-        message = self.user_session.get_messages('любой неверный выбор')
+        message = DialogEngine.process_message(self.user_session, 'любой текст')
 
         self.assertEqual(message, Messages.error)
 
         self.assertEqual(self.user_session.state, previous_state)
 
     def test_order_verifying_verify_choice(self):
-        message = self.user_session.get_messages(Options.order_verify)
+        message = DialogEngine.process_message(self.user_session, Options.order_verify)
 
         self.assertEqual(message, Messages.order_created)
 
         self.assertTrue(self.user_session.is_initial())
 
     def test_order_verifying_decline_choice(self):
-        messages = self.user_session.get_messages(Options.order_decline)
+        messages = DialogEngine.process_message(self.user_session, Options.order_decline)
 
         self.assertListEqual(messages, [Messages.restart_order, Messages.choose_pizza])
 
