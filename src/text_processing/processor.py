@@ -13,7 +13,7 @@ from src.text_processing.resources import printable_chars, stopwords_set
 class TextProcessor:
     _speller = YandexSpeller()
 
-    _word_re = re.compile('(?:[.!?]{2,3})|(?:[,:;()\"`\'.?!\-—\n\t])|(?:[А-яA-zёЁ]+(?:-[а-яА-Яa-zA-ZёЁ]+)?)')
+    _word_re = re.compile('[А-яA-zёЁ]+(?:-[а-яА-Яa-zA-ZёЁ]+)?')
 
     @classmethod
     def tokenize_and_process(cls, text, strip_accents=True, rm_not_ascii=True, rm_stopwords=True, rm_not_words=True,

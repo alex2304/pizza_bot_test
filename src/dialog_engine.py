@@ -1,10 +1,29 @@
+from typing import Union
+
 from src.constants import Messages, PizzaType, PaymentMethod
 from src.order_processing import process_order
+from src.text_processing.morph import MorphParser
+from src.text_processing.processor import TextProcessor
 from src.user_session import UserSession
-from src.text_processing import TextProcessor
 
 
 class DialogEngine:
+    keywords = {
+        PizzaType.big: 'большая, огромная, побольше',
+        PizzaType.small: 'небольшая, маленькая, поменьше',
+
+        PaymentMethod.card: 'банковская карта, перевод',
+        PaymentMethod.cash: 'наличка, кэш',
+
+        'yes': 'да, ок, верно, правильно, ага, угу',
+        'no': 'нет, отмена, неверно, неправильно, не, неа'
+    }
+
+    lemmas = {}
+
+    for k in keywords.keys():
+        lemmas[k] = set(MorphParser.lemmatize(TextProcessor.tokenize_and_process(keywords[k], rm_stopwords=False)))
+
     @classmethod
     def process_message(cls, session: UserSession, message_text: str):
         if session.state == 'initial':
@@ -61,13 +80,38 @@ class DialogEngine:
         return Messages.error
 
     @classmethod
+    def _match_keywords(cls, text, keys) -> Union[str, None]:
+        """
+        Process given text and find matches of text lemma with lemmas of given keys.
+
+        :param text: text for processing
+        :param keys: list of keys from cls.keywords dict
+        :return: None if found 0 or more than 1 matches, otherwise - key which lemmas were matched
+        """
+        tokens = TextProcessor.tokenize_and_process(text, rm_stopwords=False, spell_correct=True)
+
+        lemmas = MorphParser.lemmatize(tokens)
+
+        keys_matches = [(key, cls.lemmas[key].intersection(lemmas))
+                        for key in keys]
+
+        # remove empty sets
+        keys_matches = list(filter(lambda k_m: k_m[1], keys_matches))
+
+        if len(keys_matches) != 1:
+            return None
+
+        # return key which has matches
+        return keys_matches[0][0]
+
+    @classmethod
     def parse_pizza_type(cls, text):
-        return PizzaType.big
+        return cls._match_keywords(text, keys=[PizzaType.small, PizzaType.big])
 
     @classmethod
     def parse_payment_method(cls, text):
-        return PaymentMethod.card
+        return cls._match_keywords(text, keys=[PaymentMethod.card, PaymentMethod.cash])
 
     @classmethod
     def parse_verifying_order(cls, text) -> bool:
-        return True
+        return cls._match_keywords(text, keys=['yes', 'no']) == 'yes'
