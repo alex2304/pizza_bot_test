@@ -3,7 +3,8 @@ from typing import Union, Any
 
 import telebot
 
-from platforms.telegram.helpers import get_session, make_kb_markup
+from platforms.telegram.helpers import get_user_session, make_kb_markup
+from src.dialog_engine import DialogEngine
 
 bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'),
                       threaded=False)
@@ -13,10 +14,10 @@ bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'),
 def handle_commands(message):
     chat_id = str(message.chat.id)
 
-    session = get_session(chat_id)
+    session = get_user_session(chat_id)
 
     if session.state == 'initial':
-        messages = session.get_messages('')
+        messages = DialogEngine.process_message(session, 'initial')
 
         send_messages(chat_id, messages)
 
@@ -30,11 +31,11 @@ def handle_text(message):
 
     chat_id = str(message.chat.id)
 
-    session = get_session(chat_id)
+    session = get_user_session(chat_id)
 
-    messages = session.get_messages(message_text)
+    answer_messages = DialogEngine.process_message(session, message_text)
 
-    send_messages(chat_id, messages)
+    send_messages(chat_id, answer_messages)
 
 
 def send_messages(chat_id, messages: Union[list, Any]):

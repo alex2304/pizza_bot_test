@@ -26,18 +26,18 @@ class Options:
     order_verify = 'Да'
     order_decline = 'Нет'
 
-    @classmethod
-    def is_valid_pizza(cls, pizza_option):
-        return pizza_option in (cls.pizza_big, cls.pizza_small)
-
-    @classmethod
-    def is_valid_payment(cls, payment_option):
-        return payment_option in (cls.payment_card, cls.payment_cash)
+    # @classmethod
+    # def is_valid_pizza(cls, pizza_option):
+    #     return pizza_option in (cls.pizza_big, cls.pizza_small)
+    #
+    # @classmethod
+    # def is_valid_payment(cls, payment_option):
+    #     return payment_option in (cls.payment_card, cls.payment_cash)
 
 
 class Messages:
     error = {
-        'message': 'Попробуй ещё раз'
+        'message': 'Я тебя не понимаю. Попробуй ещё разок'
     }
 
     hello = {
@@ -67,6 +67,9 @@ class Messages:
 
     @classmethod
     def verify_order_msg(cls, pizza_type, payment_method):
+        pizza_type = Options.pizza_big if pizza_type == PizzaType.big else Options.pizza_small
+        payment_method = Options.payment_card if payment_method == PaymentMethod.card else Options.payment_cash
+
         return {
             'message': 'Вы хотите %s пиццу, оплата - %s?' % (pizza_type, payment_method),
             'options': [Options.order_verify,

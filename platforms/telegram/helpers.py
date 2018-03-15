@@ -1,11 +1,11 @@
 from telebot import types
 
-from src.sessions import UserSession
+from src.user_session import UserSession
 
 sessions = {}
 
 
-def get_session(chat_id) -> UserSession:
+def get_user_session(chat_id) -> UserSession:
     if sessions.get(chat_id) is None:
         sessions[chat_id] = UserSession(chat_id)
 

@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from src.constants import Messages, Options
-from src.sessions import UserSession
+from src.user_session import UserSession
 
 
 class TestInitDialog(TestCase):
