@@ -1,12 +1,12 @@
-from src.constants import Messages
+from src.constants import Messages, PizzaType, PaymentMethod
 from src.order_processing import process_order
 from src.user_session import UserSession
 from src.text_processing import TextProcessor
 
 
 class DialogEngine:
-    @staticmethod
-    def process_message(session: UserSession, message_text: str):
+    @classmethod
+    def process_message(cls, session: UserSession, message_text: str):
         if session.state == 'initial':
             if session.start_ordering():
                 return [Messages.hello, Messages.choose_pizza]
@@ -15,7 +15,7 @@ class DialogEngine:
                 return Messages.error
 
         elif session.state == 'waiting_pizza_type':
-            pizza_type = TextProcessor.parse_pizza_type(message_text)
+            pizza_type = cls.parse_pizza_type(message_text)
 
             if pizza_type is None:
                 return Messages.error
@@ -27,7 +27,7 @@ class DialogEngine:
                 return Messages.error
 
         elif session.state == 'waiting_payment_method':
-            payment_method = TextProcessor.parse_payment_method(message_text)
+            payment_method = cls.parse_payment_method(message_text)
 
             if payment_method is None:
                 return Messages.error
@@ -39,7 +39,7 @@ class DialogEngine:
                 return Messages.error
 
         elif session.state == 'verifying_order':
-            order_was_verified = TextProcessor.parse_verifying_order(message_text)
+            order_was_verified = cls.parse_verifying_order(message_text)
 
             if not order_was_verified:
                 if session.decline_order():
@@ -59,3 +59,15 @@ class DialogEngine:
                     return Messages.error
 
         return Messages.error
+
+    @classmethod
+    def parse_pizza_type(cls, text):
+        return PizzaType.big
+
+    @classmethod
+    def parse_payment_method(cls, text):
+        return PaymentMethod.card
+
+    @classmethod
+    def parse_verifying_order(cls, text) -> bool:
+        return True
