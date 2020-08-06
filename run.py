@@ -2,7 +2,7 @@ import traceback
 
 from platforms.telegram.bot_src import bot
 
-
+# some python change for testing pep8speaks bot
 def start():
     try:
         bot.polling(none_stop=True)
