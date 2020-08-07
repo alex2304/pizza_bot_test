@@ -5,7 +5,6 @@ from platforms.telegram.bot_src import bot
 def start():
     try:
         bot.polling(none_stop=True)
-
     except:
         traceback.print_exc()
 
