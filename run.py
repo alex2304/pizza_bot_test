@@ -7,7 +7,5 @@ def start():
         bot.polling(none_stop=True)
     except:
         traceback.print_exc()
-
-
 if __name__ == '__main__':
     start()
